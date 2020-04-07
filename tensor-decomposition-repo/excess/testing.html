@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+               <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<!-- <div id="myDiv1" style="width:30%;display: inline-block"></div>
+<div id="myDiv2" style="width:30%;display: inline-block"></div>
+<div id="myDiv3" style="width:30%;display: inline-block"></div>
+ -->
+
+
+ <div id="myDiv"></div>
+<!-- 
+<script>
+function gaussian(x,mean,sigma){
+
+	return Math.pow(2.7/sigma, -Math.pow((x-mean)/sigma,2))
+
+}
+
+function gaussian_list(list,mean,sigma){
+
+	var arr = []
+	for(i in list){
+		arr.push(gaussian(list[i],mean,sigma))
+	}
+	return arr
+}
+
+
+function round(n,digits){
+	return Math.round(n*Math.pow(10,digits))/Math.pow(10,digits)
+}
+
+
+
+function range(begin,end,points=10){
+
+	var temp = []
+	var spacing = (end - begin)/points
+	console.log(spacing)
+	for(i=begin;i<=end;i=i+spacing){
+		temp.push(i);
+	}
+	return temp
+}
+
+
+function twoddata(data1,data2){
+
+	var temp = []
+
+	for(i in data1){
+		var temp2 = []
+
+		for (j in data2){
+			temp2.push(data1[i]*data2[j])
+		}
+		temp.push(temp2)
+	}
+	return temp
+}
+
+
+function three3data(data1,data2,data3){
+
+	var temp = []
+
+	var prev_res = twoddata(data1,data2)
+
+	for(i of data3){
+		var temp1 = []
+		for(j of prev_res){
+			var temp2  = []
+			for (k of j){
+				temp2.push(k*i)
+			}
+			temp1.push(temp2)
+		}
+		temp.push(temp1)
+	}
+	return temp;
+}
+
+
+var data;
+
+function update_plot(data,id){
+	console.log('yo');
+	Plotly.animate('myDiv'+id, {data:data}, {
+	    transition: {
+	      duration: 500,
+	      easing: 'cubic-in-out'
+	    },
+	    frame: {
+	      duration: 500
+	    }
+	  });	
+}
+
+
+
+function initialize_plot(id){
+	var data = [
+	  {
+	  	// x: [-2,-1,0,1,2],
+	  	// y: arr,
+	    //z: twoddata(res,res),
+	    z: something[id*20],
+	        zmin: 0,
+	        zmax: 1,
+	            type: 'heatmap',
+	    colorscale: 'YIGnBu',
+
+	  }
+	];
+
+	Plotly.plot('myDiv'+id, data);	
+}
+
+
+
+
+
+
+
+
+var arr = range(-2,2,101)
+var res = gaussian_list(arr,0,1)
+var z = range(0,1,101)
+var something = three3data(res,res,z)
+
+console.log(arr);
+
+// console.log(arr)
+// console.log(res)
+// var data = {
+//   x: arr,
+//   y: res,
+//   mode: 'lines',
+//   name: 'Lines'
+// };
+
+for(var i=1;i<4;i++){
+	initialize_plot(i)
+}
+
+
+
+
+for(var k=0;k<20;k++){
+for(var i=1;i<4;i++){
+	var data = [
+	  {
+	  	// x: [-2,-1,0,1,2],
+	  	// y: arr,
+	    //z: twoddata(res,res),
+	    z: something[i*20+k],
+	        zmin: 0,
+	        zmax: 1,
+	            type: 'heatmap',
+	    colorscale: 'YIGnBu',
+
+	  }
+	];
+	update_plot(data,i)
+}
+}
+
+
+
+
+
+
+// console.log(something[0])
+
+// data = data
+
+
+// Plotly.plot('myDiv', data);	
+
+
+// for(var i=0;i<100;i++){
+// 	console.log(i);
+// 		var data = [
+// 		  {
+// 		  	x: arr,
+// 		  	y: arr,
+// 		    //z: twoddata(res,res),
+// 		    z: something[i],
+// 		        zmin: 0,
+// 		        zmax: 1,
+// 		            type: 'heatmap',
+// 		    colorscale: 'YIGnBu',
+
+// 		  }
+// 		];
+// 		update_plot(data);
+// }
+
+</script> -->
+
+<script>
+function gaussian(x, mean, sigma) {
+
+    return Math.pow(2.7 / sigma, -Math.pow((x - mean) / sigma, 2))
+
+}
+
+function gaussian_list(list, mean, sigma) {
+
+    var arr = []
+    for (i in list) {
+        arr.push(gaussian(list[i], mean, sigma))
+    }
+    return arr
+}
+
+
+function round(n, digits) {
+    return Math.round(n * Math.pow(10, digits)) / Math.pow(10, digits)
+}
+
+
+
+function range(begin, end, points = 10) {
+
+    var temp = []
+    var spacing = (end - begin) / points
+    console.log(spacing)
+    for (i = begin; i <= end; i = i + spacing) {
+        temp.push(i);
+    }
+    return temp
+}
+
+
+function twoddata(data1, data2) {
+
+    var temp = []
+
+    for (i in data1) {
+        var temp2 = []
+
+        for (j in data2) {
+            temp2.push(data1[i] * data2[j])
+        }
+        temp.push(temp2)
+    }
+    return temp
+}
+
+
+function three3data(data1, data2, data3) {
+
+    var temp = []
+
+    var prev_res = twoddata(data1, data2)
+
+    for (i of data3) {
+        var temp1 = []
+        for (j of prev_res) {
+            var temp2 = []
+            for (k of j) {
+                temp2.push(k * i)
+            }
+            temp1.push(temp2)
+        }
+        temp.push(temp1)
+    }
+    return temp;
+}
+
+
+var data;
+
+function update_plot(data, id) {
+    console.log('yo');
+    Plotly.animate('myDiv' + id, {
+        data: data
+    }, {
+        transition: {
+            duration: 500,
+            easing: 'cubic-in-out'
+        },
+        frame: {
+            duration: 500
+        }
+    });
+}
+
+
+
+function initialize_plot() {
+
+    datas = []
+
+    for(var id=1;id<5;id++){
+    var data = [{
+        z: something[id * 20],
+        zmin: 0,
+        zmax: 1,
+        type: 'heatmap',
+        colorscale: 'YIGnBu',
+    }];
+    datas.push(data)
+    }
+
+    var layout = {
+      grid: {rows: 2, columns: 2, pattern: 'independent'},
+    };
+
+	    var trace1 = {
+	  x: [1, 2, 3],
+	  y: [4, 5, 6],
+	  type: 'scatter'
+	};
+
+	var trace2 = {
+	  x: [20, 30, 40],
+	  y: [50, 60, 70],
+	  xaxis: 'x2',
+	  yaxis: 'y2',
+	  type: 'scatter'
+	};
+
+	var trace3 = {
+	  x: [300, 400, 500],
+	  y: [600, 700, 800],
+	  xaxis: 'x3',
+	  yaxis: 'y3',
+	  type: 'scatter'
+	};
+
+	var trace4 = {
+	  x: [4000, 5000, 6000],
+	  y: [7000, 8000, 9000],
+	  xaxis: 'x4',
+	  yaxis: 'y4',
+	  type: 'scatter'
+	};
+
+	var datas = [trace1, trace2, trace3, trace4];
+
+	var layout = {
+	  grid: {rows: 2, columns: 2, pattern: 'independent'},
+	};
+
+
+    Plotly.newPlot('myDiv', datas,layout);
+}
+
+
+
+
+var arr = range(-2, 2, 101)
+var res = gaussian_list(arr, 0, 1)
+var z = range(0, 1, 101)
+var something = three3data(res, res, z)
+
+console.log(arr);
+initialize_plot()
+
+</script>
+
+

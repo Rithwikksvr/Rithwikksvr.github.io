@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html>
+  <head>
+                       <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+      <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Anton|Cabin" rel="stylesheet">
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+
+<style type="">
+	
+	button {
+
+		background: #9a82ee!important;color: white!important;font-weight: 400;font-size: 1.4em;
+
+	}
+
+</style>
+  </head>
+  <body style="font-family: 'Cabin', sans-serif;;;overflow-x: hidden">
+  	<div class="container-fluid" style="padding: 0px!important">
+  		<div style="background: #9a82ee;color: white;padding-top: 2em; padding-bottom: 1.5em!important;padding-left: 1em;padding-right: 1em;">
+  			<h1 class='text-center'style='font-size: 3em;'> Linear v/s Lasso v/s Ridge v/s Robust Regression </h1>
+
+  			<div class="row text-center" style="padding-top: 2em;">
+  				<div class='col-lg-4'>
+
+  					<label for="RidgeRange" style="font-size: 1.7em;">Ridge Coefficient</label>
+					<input type="range" class="custom-range" min="0" max="500" id="RidgeRange">
+					<h6 id='Ridgevalue' style="font-size: 1.4em;">250</h6>
+
+  				</div>
+
+  				<div class='col-lg-4'>
+
+  					<label for="LassoRange" style="font-size: 1.7em;">Lasso Coefficient</label>
+					<input type="range" class="custom-range" min="0" max="500" id="LassoRange">
+					<h6 id='Lassovalue'>250</h6>
+
+  				</div>
+  				
+
+  				<div class='col-lg-4'>
+
+  					<label for="HuberRange" style="font-size: 1.7em;">Huber Coefficient</label>
+					<input type="range" class="custom-range" min="10" max="200" id="HuberRange">
+					<h6 id='Hubervalue'>10</h6>
+
+  				</div>
+  				
+
+
+  				
+  			</div>
+  		</div>
+  		<div class="row" style="margin-top: 0em;">
+
+  			
+  			<div class='col-lg-10 offset-lg-1'>
+  				
+    			<div id='graph'></div>
+    			<div class='buttonsdiv text-center' style="">
+    				<button onclick="generate_outlier()" class="btn" type="button" >Add outlier</button>
+    				<button onclick="reset()" class="btn" type="button" >Reset</button>
+    			</div>
+    		</div>	
+    	</div>
+
+
+    	<div class="container text-center" style="margin-top: 2em;">
+    		<h2>Huber Loss</h2>
+    		<p style="font-size: 1.3em;">
+    		<br>
+
+			
+			$
+			Loss = 
+			 \left\{
+			\begin{array}{cc}
+			  
+			    \begin{array}{cc}
+			      \frac{1}{2} {\epsilon_{i}}^2 & \epsilon_{i} \leq \delta \\
+			      \ \delta (| \epsilon_{i} |  - \frac{1}{2} \delta) & \epsilon_{i} \gt \delta  \\
+			 
+			    \end{array}
+			\end{array}
+			\right.
+						
+			$
+		</p>
+		<br>
+		<br>
+
+
+
+    	</div>
+
+
+    	<br>
+    	<br>
+    	<br>
+    	<br>
+	</div>
+    
+    <script>
+
+
+function linspace(startValue, stopValue, cardinality) {
+  var arr = [];
+  var currValue = startValue;
+  var step = (stopValue - startValue) / (cardinality - 1);
+  for (var i = 0; i < cardinality; i++) {
+    arr.push(currValue + (step * i));
+  }
+  return arr;
+}
+
+
+
+function reset() {
+	ridgeslider.value = 3;
+  	ridge_lambda = ridgeslider.value;
+	ridgevalue.innerHTML = ridge_lambda;
+
+	lassoslider.value = 43;
+  	lasso_lambda = lassoslider.value;
+	lassovalue.innerHTML = lasso_lambda;
+
+	huberslider.value = 10;
+  	huber_lambda = huberslider.value;
+	hubervalue.innerHTML = huber_lambda;
+
+
+
+	
+
+
+
+	 y =[];
+	  for(var i=0;i < x.length;i++){
+	  	y.push( a * x[i] + b + magnitude*(Math.random() - .5));
+	  }
+
+
+	var input_points = {
+	  x: x,
+	  y: y,
+	  mode: 'markers',
+	  name: 'Input Points',
+	};
+
+	var layout = {
+		  xaxis: {range: [min_val - 1, x[x.length-1]+1]},
+		  yaxis: {range: [0, 100]}
+		};
+
+
+	var linear_w,linear_b;
+
+	[linear_w,linear_b] = linear_regression_gradient_descent(x,y,mean_squared_error);
+
+
+	var ridge_w,ridge_b ;
+
+	[ridge_w,ridge_b]= ridge_gradient_descent(x,y,ridge_error);
+
+	var lasso_w,lasso_b;
+
+	[lasso_w,lasso_b] = lasso_gradient_descent(x,y,lasso_error)
+
+
+	var huber_x,huber_y ;
+	[huber_w,huber_b]= huber_gradient_descent(x,y,mean_squared_error);
+
+
+	var linear_preds = generate_linear_predictions(linear_w,linear_b);
+	var ridge_preds  = generate_linear_predictions(ridge_w,ridge_b);
+	var lasso_preds = generate_linear_predictions(lasso_w,lasso_b);
+	var huber_preds = generate_linear_predictions(huber_w,huber_b);
+
+	var linear_points = {
+	  x: x,
+	  y: linear_preds,
+	  mode: 'line',
+	  name: 'Linear Model',
+	};
+
+
+	var ridge_points = {
+	  x: x,
+	  y: ridge_preds,
+	  mode: 'line',
+	  name: 'Ridge Model',
+	};
+
+
+
+	var lasso_points = {
+	  x: x,
+	  y: lasso_preds,
+	  mode: 'line',
+	  name: 'Lasso Model',
+	};
+
+
+	var huber_points = {
+	  x: x,
+	  y: huber_preds,
+	  mode: 'line',
+	  name: 'Huber Model',
+	};
+
+
+	var data = [input_points,linear_points,ridge_points,lasso_points,huber_points];
+
+	Plotly.animate(graphDiv, {
+	    data: data,
+	    
+	    layout: layout
+	  }, {
+	    transition: {
+	      duration: 500,
+	      easing: 'cubic-in-out'
+	    },
+	    frame: {
+	      duration: 500
+	    }
+	  })
+
+
+
+
+}
+
+
+
+
+/*
+var something = document.getElementById('graph');
+
+var something = document.getElementById('graph');
+
+
+var x = [];
+var y= [];
+something.style.cursor = 'pointer';
+
+
+
+
+
+
+
+
+function printMousePos(event) {
+	var el  = document.getElementById('graph');
+	var rect = el.getBoundingClientRect();
+	
+	var x_coor = event.clientX - el.offsetLeft;
+	var y_coor = event.clienty - el.offsetTop;
+
+	//console.log(x_coor);
+	//console.log(y_coor);
+	console.log(event.clientX);
+	console.log(rect.left);
+	//x.push(  );
+    // do something...
+};
+gene
+
+document.addEventListener("click", printMousePos);
+*/
+
+
+
+
+  
+
+//Initialization
+
+
+var ridgeslider = document.getElementById("RidgeRange");
+var ridgevalue = document.getElementById("Ridgevalue");
+
+var lassoslider = document.getElementById("LassoRange");
+var lassovalue = document.getElementById("Lassovalue");
+
+
+var huberslider = document.getElementById("HuberRange");
+var hubervalue = document.getElementById("Hubervalue");
+
+
+
+ridgeslider.value = 3;
+ridge_lambda = ridgeslider.value;
+ridgevalue.innerHTML = ridge_lambda;
+
+lassoslider.value = 43;
+lasso_lambda = lassoslider.value;
+lassovalue.innerHTML = lasso_lambda;
+
+huberslider.value = 10;
+huber_lambda = huberslider.value;
+hubervalue.innerHTML = huber_lambda;
+
+
+
+
+
+
+
+
+//output.innerHTML = slider.value; // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+ridgeslider.oninput = function() {
+  
+
+	ridge_lambda = ridgeslider.value;
+	ridgevalue.innerHTML = ridge_lambda;
+
+	//console.log(ridge_lambda);
+
+	[ridge_w,ridge_b]= ridge_gradient_descent(x,y,ridge_error);
+
+	console.log("Ridge Weights",ridge_w,ridge_b);
+
+
+	ridge_preds  = generate_linear_predictions(ridge_w,ridge_b);
+
+	var ridge_points = {
+	  x: x,
+	  y: ridge_preds,
+	  mode: 'line',
+	  name: 'Ridge Model',
+	};
+
+	var data = [input_points,linear_points,ridge_points,lasso_points,huber_points];
+
+	  Plotly.animate(graphDiv, {
+	    data: data,
+	    
+	    layout: layout
+	  }, {
+	    transition: {
+	      duration: 20,
+	      easing: 'cubic-in-out'
+	    },
+	    frame: {
+	      duration: 20
+	    }
+	  })
+
+
+
+
+}
+
+
+
+
+huberslider.oninput = function() {
+  
+
+	huber_lambda = huberslider.value;
+	hubervalue.innerHTML = huber_lambda;
+
+	//console.log(huber_lambda);
+
+	[huber_w,huber_b]= huber_gradient_descent(x,y,mean_squared_error);
+
+	console.log("Huber Weights",huber_w,huber_b);
+
+
+	huber_preds  = generate_linear_predictions(huber_w,huber_b);
+
+	var huber_points = {
+	  x: x,
+	  y: huber_preds,
+	  mode: 'line',
+	  name: 'Huber Model',
+	};
+
+	var data = [input_points,linear_points,ridge_points,lasso_points,huber_points];
+
+	  Plotly.animate(graphDiv, {
+	    data: data,
+	    
+	    layout: layout
+	  }, {
+	    transition: {
+	      duration: 20,
+	      easing: 'cubic-in-out'
+	    },
+	    frame: {
+	      duration: 20
+	    }
+	  })
+
+}
+
+
+
+
+
+
+lassoslider.oninput = function() {
+  
+
+	lasso_lambda = lassoslider.value;
+	lassovalue.innerHTML = lasso_lambda;
+
+	//console.log(ridge_lambda);
+
+	[lasso_w,lasso_b]= lasso_gradient_descent(x,y,ridge_error);
+
+	console.log("Lasso Weights",lasso_w,lasso_b);
+
+
+	lasso_preds  = generate_linear_predictions(lasso_w,lasso_b);
+
+	var lasso_points = {
+	  x: x,
+	  y: lasso_preds,
+	  mode: 'line',
+	  name: 'Lasso Model',
+	};
+
+	var data = [input_points,linear_points,ridge_points,lasso_points,huber_points];
+
+	  Plotly.animate(graphDiv, {
+	    data: data,
+	    
+	    layout: layout
+	  }, {
+	    transition: {
+	      duration: 20,
+	      easing: 'cubic-in-out'
+	    },
+	    frame: {
+	      duration: 20
+	    }
+	  })
+
+
+
+
+}
+
+
+
+
+
+  graphDiv = document.getElementById('graph');
+
+  var min_val = 0;
+  var max_val = 10;
+
+  var x = linspace(min_val,max_val,20);
+
+  console.log(x);
+  var magnitude = 25;
+
+  var a = 10;
+  var b = 5;
+
+  var y =[];
+  for(var i=0;i < x.length;i++){
+  	y.push( a * x[i] + b + magnitude*(Math.random() - .5));
+  }
+
+
+
+//Till here it is to generate initial data
+
+
+var input_points = {
+  x: x,
+  y: y,
+  mode: 'markers',
+  name: 'Input Points',
+};
+
+var layout = {
+	  xaxis: {range: [min_val - 1, x[x.length-1]+1]},
+	  yaxis: {range: [0, 100]}
+	};
+
+
+
+//PLotting initial data points
+/*
+
+
+var data = [input_points];
+
+
+
+
+
+
+Plotly.newPlot(graphDiv, data,layout);
+*/
+
+
+
+//Hyperparams
+
+var epochs = 8000;
+var alpha = .0001;
+
+
+
+//Linear Model
+
+var linear_w,linear_b;
+
+[linear_w,linear_b] = linear_regression_gradient_descent(x,y,mean_squared_error);
+
+
+var ridge_w,ridge_b ;
+
+[ridge_w,ridge_b]= ridge_gradient_descent(x,y,ridge_error);
+
+var lasso_w,lasso_b;
+
+[lasso_w,lasso_b] = lasso_gradient_descent(x,y,lasso_error)
+
+
+var huber_x,huber_y ;
+[huber_w,huber_b]= huber_gradient_descent(x,y,mean_squared_error);
+
+
+console.log("Linear Weights",linear_w,linear_b);
+console.log("Ridge Weights",ridge_w,ridge_b);
+console.log("Lasso Weights",lasso_w,lasso_b);
+console.log("Huber Weights",huber_w,huber_b);
+
+
+var linear_preds = generate_linear_predictions(linear_w,linear_b);
+var ridge_preds  = generate_linear_predictions(ridge_w,ridge_b);
+var lasso_preds = generate_linear_predictions(lasso_w,lasso_b);
+var huber_preds = generate_linear_predictions(huber_w,huber_b);
+
+var linear_points = {
+  x: x,
+  y: linear_preds,
+  mode: 'line',
+  name: 'Linear Model',
+};
+
+
+var ridge_points = {
+  x: x,
+  y: ridge_preds,
+  mode: 'line',
+  name: 'Ridge Model',
+};
+
+
+
+var lasso_points = {
+  x: x,
+  y: lasso_preds,
+  mode: 'line',
+  name: 'Lasso Model',
+};
+
+
+var huber_points = {
+  x: x,
+  y: huber_preds,
+  mode: 'line',
+  name: 'Huber Model',
+};
+
+
+var data = [input_points,linear_points,ridge_points,lasso_points,huber_points];
+
+
+//console.log(linear_w,linear_b);
+//console.log(linear_points);
+
+
+Plotly.newPlot(graphDiv, data,layout);
+
+function generate_outlier(){
+
+
+	var rand_val = Math.random();
+	console.log(rand_val);
+
+	if (rand_val > .5){
+
+  	val = x.length  - Math.floor(Math.random() * 6);
+  	val = val-1;
+  	y[val] = 20 * Math.random();  
+
+	}
+
+	else{
+
+  	val = Math.floor(Math.random() * 6);
+  	y[val] = 50 + 50 * Math.random();  
+
+	}
+
+	console.log(val,y[val]);
+
+  	
+	
+	[linear_w,linear_b] = linear_regression_gradient_descent(x,y,mean_squared_error);
+	[ridge_w,ridge_b]= ridge_gradient_descent(x,y,ridge_error);
+	[lasso_w,lasso_b] = lasso_gradient_descent(x,y,);
+	[huber_w,huber_b]= huber_gradient_descent(x,y,mean_squared_error);
+
+	var linear_preds = generate_linear_predictions(linear_w,linear_b);
+	var ridge_preds  = generate_linear_predictions(ridge_w,ridge_b);
+	var lasso_preds = generate_linear_predictions(lasso_w,lasso_b);
+	var huber_preds = generate_linear_predictions(huber_w,huber_b);
+
+	console.log("Linear Weights",linear_w,linear_b);
+	console.log("Ridge Weights",ridge_w,ridge_b);
+	console.log("Lasso Weights",lasso_w,lasso_b);
+	console.log("Huber Weights",huber_w,huber_b);
+
+
+
+	var linear_points = {
+	  x: x,
+	  y: linear_preds,
+	  mode: 'line',
+	  name: 'Linear Model',
+	};
+
+
+	var ridge_points = {
+	  x: x,
+	  y: ridge_preds,
+	  mode: 'line',
+	  name: 'Ridge Model',
+	};
+
+
+
+	var lasso_points = {
+	  x: x,
+	  y: lasso_preds,
+	  mode: 'line',
+	  name: 'Lasso Model',
+	};
+
+
+	var huber_points = {
+	  x: x,
+	  y: huber_preds,
+	  mode: 'line',
+	  name: 'Huber Model',
+	};
+
+
+	var data = [input_points,linear_points,ridge_points,lasso_points,huber_points];
+
+	var layout = {
+	  xaxis: {range: [min_val-1, x[x.length-1]+1]},
+	  yaxis: {range: [0, 100]}
+	};
+	
+
+	
+  Plotly.animate(graphDiv, {
+    data: data,
+    
+    layout: layout
+  }, {
+    transition: {
+      duration: 500,
+      easing: 'cubic-in-out'
+    },
+    frame: {
+      duration: 500
+    }
+  })
+
+
+
+	//Plotly.newPlot(graphDiv, data,layout);
+	
+ };
+
+
+
+
+function generate_linear_predictions(w,b){
+
+	var current_preds = [];
+	for(var i=0;i<x.length;i++){
+		current_preds.push( w * x[i] + b);
+	}
+	return current_preds;
+
+};
+
+
+
+
+function mean_squared_error(truth,pred){
+	
+	var s=0;
+
+	for(var i=0;i<truth.length;i++){
+		s = s + Math.pow(truth[i] - pred[i],2);
+	}
+	return s;
+
+};
+
+function ridge_error(truth,pred,w,lambda){
+
+	var s=0;
+	
+	for(var i=0;i<truth.length;i++){
+		s = s + Math.pow(truth[i] - pred[i],2);
+	}
+
+	s = s + lambda * w * w;
+
+	return s;
+}
+
+
+function lasso_error(truth,pred,w,lambda){
+
+	var s=0;
+	
+	for(var i=0;i<truth.length;i++){
+		s = s + Math.pow(truth[i] - pred[i],2);
+	}
+
+	s = s + lambda * Math.abs(w) ;
+
+	return s;
+}
+
+
+
+
+
+
+function huber_gradient_descent(x,truth,cost_function){
+
+	var w = Math.random();
+	var b = Math.random();
+	
+
+	var rem = 0;
+
+	for(var e=0;e<3*epochs;e++){
+		var preds = [];
+		for(var i=0;i<truth.length;i++){
+
+			preds.push( w*x[i] + b);
+
+		}
+
+		for(var i=0;i<truth.length;i++){
+			
+			if (Math.abs(preds[i] - truth[i])<huber_lambda){
+				w = w - (alpha * (preds[i] - truth[i])*x[i])/truth.length;
+				b = b - (alpha * (preds[i] - truth[i])*1)/truth.length;
+				
+				
+			}
+			else{
+
+				if (preds[i] - truth[i] > 0){
+
+					w = w - alpha*huber_lambda*x[i]/truth.length;
+					b = b - alpha*huber_lambda/truth.length;
+
+				}
+				else{
+
+					w = w + alpha*huber_lambda*x[i]/truth.length;
+					b = b + alpha*huber_lambda/truth.length;
+				}
+				
+			}
+			//b = b - (alpha * (preds[i] - truth[i])*1)/truth.length; 
+
+
+
+		}
+
+			if (e%10000==0){
+			console.log("Huber",e,mean_squared_error(truth,preds));
+			}
+		
+	}
+	//console.log(w,b);
+
+	return [w,b]
+
+}
+
+
+
+
+function lasso_gradient_descent(x,truth,cost_function){
+
+	var w = Math.random();
+	var b = Math.random();
+	
+
+	for(var e=0;e<epochs;e++){
+		var preds = [];
+		for(var i=0;i<truth.length;i++){
+
+			preds.push( w*x[i] + b);
+		}
+		for(var i=0;i<truth.length;i++){
+			if (w>0){
+				w = w - (alpha * (preds[i] - truth[i])*x[i])/truth.length - alpha*lasso_lambda/truth.length;
+			}
+			else{
+				w = w - (alpha * (preds[i] - truth[i])*x[i])/truth.length + alpha*lasso_lambda/truth.length;
+			}
+
+			b = b - (alpha * (preds[i] - truth[i]))/truth.length;
+
+		}
+		//console.log(e,ridge_error(y,preds,w,lambda));
+	}
+	//console.log(w,b);
+
+	return [w,b]
+
+}
+
+
+
+function ridge_gradient_descent(x,truth,cost_function){
+
+	var w = Math.random();
+	var b = Math.random();
+	//console.log(ridge_lambda);
+	
+
+	for(var e=0;e<epochs;e++){
+		var preds = [];
+		for(var i=0;i<truth.length;i++){
+
+			preds.push( w*x[i] + b);
+		}
+		for(var i=0;i<truth.length;i++){
+			w = w - (alpha * (preds[i] - truth[i])*x[i])/truth.length - alpha*ridge_lambda * w/truth.length;
+			b = b - (alpha * (preds[i] - truth[i]))/truth.length;
+		}
+		//console.log(e,ridge_error(y,preds,w,lambda));
+	}
+	//console.log(w,b);
+
+	return [w,b]
+
+}
+
+
+
+function linear_regression_gradient_descent(x,truth,cost_function){
+
+	var w = Math.random();
+	var b = Math.random();
+	
+	for(var e=0;e<epochs;e++){
+		var preds = [];
+		for(var i=0;i<truth.length;i++){
+
+			preds.push( w*x[i] + b);
+		}
+		for(var i=0;i<truth.length;i++){
+			w = w - (alpha * (preds[i] - truth[i])*x[i])/truth.length
+			b = b - (alpha * (preds[i] - truth[i]))/truth.length
+		}
+		//console.log(e,cost_function(y,preds));
+	}
+	//console.log(w,b);
+
+	return [w,b]
+
+};
+
+
+
+
+</script>
+
+
+
+    </script>
+  </body>
+</html>

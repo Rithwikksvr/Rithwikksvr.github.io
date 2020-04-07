@@ -1,0 +1,336 @@
+<!doctype html>
+<meta charset="utf-8">
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+<script src="https://distill.pub/template.v1.js"></script>
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script type="text/front-matter">
+  title: "Article Title"
+  description: "Description of the post"
+  authors:
+  - Chris Olah: http://colah.github.io
+  - Shan Carter: http://shancarter.com
+  affiliations:
+  - Google Brain: http://g.co/brain
+  - Google Brain: http://g.co/brain
+</script>
+
+
+<dt-article class="centered" style="text-align: justify;"> 
+
+
+
+  <h1>Tensor Decomposition and its applications</h1>
+
+  
+  <h2>What are Tensors?</h2>
+
+  <p>
+  Vectors are an extension over scalars. Matrices are an extension over vectors. Matrices can be considered to be a ordered collection of vectors. Tensors can be considered as an extension over matrices. A 3-dimensional tensor is an ordered collection of matrices. 
+
+
+  Tensors can be seen in our day-to-day lives. An image is an example of 3-dimensional tensor, where each color channel is a matrix. Videos are 4-dimensional tensors, where one index corresponds to the time and the other three indices correspond to color channels Red, Green and Blue.
+  </p>
+
+  <p><img src='static/lena.svg' class="centered"></p>
+
+  <h2>Tensor Operations</h2>
+
+  <p>
+  Let \(IMG\)[W x H x 3] denote an colored image where the color channels are in order of RGB. <br>
+  <br>
+  \(IMG(x, y, 1)\) = Intensity of Red pixel at position (x,y). <br>
+  \(IMG(x, y, 2)\) = Intensity of Green pixel at position (x,y). <br>
+  \(IMG(x, y, 3)\) = Intensity of Blue pixel at position (x,y). <br>
+  </p>
+
+  
+  <h2>Tensor Products</h2>
+
+  <p>Kronecker product of two vectors is defined as follows.<br>
+
+    $$
+    \begin{bmatrix}
+    x_{1}  \\
+    x_{2}  
+    \end{bmatrix} \otimes \begin{bmatrix}
+    y_{1}  \\
+    y_{2}  
+    \end{bmatrix} = \begin{bmatrix}
+    x_{1}y_{1}  \\
+    x_{1}y_{2}  \\
+    x_{2}y_{1}  \\
+    x_{2}y_{2} 
+    \end{bmatrix} 
+    $$
+
+    <p>Kronecker product of two matrices \(A(I,J)\) and \(B(K,L)\) is defined as follows.<br>
+
+    
+    $$
+    A \otimes B     =  \begin{bmatrix}
+    a_{11}B & a_{12}B & \dots & a_{1J}B\\
+    a_{21}B & a_{22}B & \dots & a_{2J}B\\
+    \vdots  & \vdots  & \dots & \vdots \\
+    a_{I1}B & a_{I2}B & \dots & a_{IJ}B
+    \end{bmatrix} 
+    $$
+
+    which is simplified as 
+
+    $$
+    A \otimes B     =  
+    \begin{bmatrix}
+    a_{1} \otimes b_{1} & a_{1} \otimes b_{2} & \dots & a_{J} \otimes b_{L-1} & a_{J} \otimes b_{L}
+    \end{bmatrix} 
+    $$
+
+
+    The flattening of 3-dimensional tensor \(T(2,2,2)\) is as follows 
+
+    \begin{bmatrix}
+    x_{1}y_{1}z_{1}  \\
+    x_{1}y_{1}z_{2}  \\
+    x_{1}y_{2}z_{1}  \\
+    x_{1}y_{2}z_{2}  \\
+    x_{2}y_{1}z_{1}  \\
+    x_{2}y_{1}z_{2}  \\
+    x_{2}y_{2}z_{1}  \\
+    x_{2}y_{2}z_{2}
+    \end{bmatrix} 
+
+    \(x_{i}y_{j}z_{k}\) represents an element \(T(i,j,k)\). The flattening can be used to represent a tensor.<br><br>
+
+
+    Kronecker product between 3 vectors is as follows
+
+        $$
+    \begin{bmatrix}
+    x_{1}  \\
+    x_{2}  
+    \end{bmatrix} \otimes \begin{bmatrix}
+    y_{1}  \\
+    y_{2}  
+    \end{bmatrix} \otimes \begin{bmatrix}
+    z_{1}  \\
+    z_{2}  
+    \end{bmatrix} = \begin{bmatrix}
+    x_{1}y_{1}  \\
+    x_{1}y_{2}  \\
+    x_{2}y_{1}  \\
+    x_{2}y_{2} 
+    \end{bmatrix} \otimes \begin{bmatrix}
+    z_{1}  \\
+    z_{2} \end{bmatrix}  = \begin{bmatrix}
+    x_{1}y_{1}z_{1}  \\
+    x_{1}y_{1}z_{2}  \\
+    x_{1}y_{2}z_{1}  \\
+    x_{1}y_{2}z_{2}  \\
+    x_{2}y_{1}z_{1}  \\
+    x_{2}y_{1}z_{2}  \\
+    x_{2}y_{2}z_{1}  \\
+    x_{2}y_{2}z_{2}
+    
+    \end{bmatrix} 
+    $$
+
+    
+
+   </p>
+
+  <h2>Rank 1 Tensors</h2> 
+  <p>Let \( A (2,2,2)\) be  tensor. The tensor \(A\) is said be a rank one tensor if \(\exists\) vectors \(U(2)\), \(V(2)\), \(W(2)\) such that 
+$$
+    A = \begin{bmatrix}
+    u_{1}  \\
+    u_{2}  
+    \end{bmatrix} \otimes \begin{bmatrix}
+    v_{1}  \\
+    v_{2}  
+    \end{bmatrix} \otimes \begin{bmatrix}
+    w_{1}  \\
+    w_{2} 
+    \end{bmatrix} 
+$$
+
+  It is analogous to representing a the tensor \( A \) using <b>six</b> values instead of <b>eight</b> values. 
+
+  Similarly, a tensor \( T(P,Q,R) \) is a rank 1 tensor if if \(\exists\) vectors \(U(P)\), \(V(Q)\), \(W(R)\) such that
+
+  $$
+    T = \begin{bmatrix}
+    u_{1}  \\
+    u_{2}  \\
+    \vdots \\
+    u_{P}  
+    \end{bmatrix} \otimes \begin{bmatrix}
+    v_{1}  \\
+    v_{2}  \\
+    \vdots \\
+    v_{Q}
+    \end{bmatrix} \otimes \begin{bmatrix}
+    w_{1}  \\
+    w_{2}  \\
+    \vdots \\
+    w_{R}  
+    \end{bmatrix} 
+$$
+
+
+  Intuitively, if a tensor  \( T(P,Q,R) \) is a rank 1 tensor, it can represented using <b>P+Q+R</b> entries instead of <b>PQR</b> entries.
+  </p>  
+
+  <h2>Rank \( k \) Tensors</h2>
+
+  <p>A tensor is said to be a rank \(k\) tensor if it can be represented as a sum of \(k\) rank-1 tensors. 
+
+  <br>
+
+  <br>
+   Let \( T(P,Q,R) \)  be a tensor. A tensor \( T\) is rank-\( k \) if \( \exists\) matrices  \( U(P,k), V(Q,k), W(R,k) \) matrices such that 
+
+  $$  
+  U = \begin{bmatrix} u_{1}  & u_{2} & \dots & u_{k} \end{bmatrix}\\
+  $$ 
+
+  $$  
+  V = \begin{bmatrix} v_{1}  & v_{2} & \dots & v_{k} \end{bmatrix} \\
+  $$ 
+
+
+  $$  
+  W = \begin{bmatrix} w_{1}  & w_{2} & \dots & w_{k} \end{bmatrix}\\
+  $$ 
+
+    $$  
+  \hat{T} = \sum_{i=1}^{k} u_{i} \otimes v_{i} \otimes w_{i}\\
+  $$ 
+
+  
+  Finding the rank of tensor is known to be \(NP-COMPLETE\)
+
+  </p>
+
+  <h2>Parafac Tensor Decomposition</h2>
+
+  <p>Given a tensor \( T \) of rank-\(k\), express it as a sum of \(k\) rank-1 tensors. We will be discussing about Tucker decomposition and Parafac Decomposition.</p>
+
+  <h2>Tensor Decomposition explained</h2>
+
+  <p>
+
+    <div id="my_dataviz"></div>
+
+
+  </p>
+
+
+  <h2>Tensors and Neural Networks</h2>
+  <p>
+  The convolution layer in neural networks can be represented using tensors. Assume the input to be of shape \( (H, W, C) \), an image of shape \( (H, W) \) having \(C \) channels. \(N\) convolution filters having filter of shape \( (F_{x}, F_{y}) \) are used over the input. This weights matrix can be represented using a tensor T of shape \( (N, F_{x}, F_{y}, C) \). So usage of Multi-dimensional arrays for storing the weights of a neural network implies the usage of tensors.</p>
+
+
+  <h2>Weight compression using Tensor Decomposition</h2>4
+
+    <p>Explains the ideas presented in a paper</p>
+
+  <h2>Tensor Nets</h2>
+
+  <p>Neural networks with millions of parameters can be often hard to run on devices with low ram space.  Instead of using 4-dimensional weights tensor to represent a convolution layer, we can instead maintain four matrices whose tensor product results in the convolution filter. Need to elaborate more</p>
+
+
+
+  <h2>Recommendation systerm or some other application of Tensor Decomposition</h2>
+<!-- 
+
+  <h2>Neural-Network weight compression using Tensor Decomposition</h2>
+  <p>
+  Tensor Decomposition can also be used for compressing the weights of a neural network. Neural network weights can be compressed by quantization of weights. In an convolutional neural network, each layer of weights is an 4-Dimensional Tensor. The first index corresponds to the the applied filter. The second index corresponds to the row in the applied filter. The third index corresponds to column of the applied filter. The fourth index corresponds to the channel in the applied filter. Assuming, we are able to find the right latent factor, say r, we can compress these weights into four matrices. This reduces the memory overhead associated with storing the weights of a neural network. This is  a technique for compressing the weights of a neural network.</p>
+
+  <h2>Tensor Nets</h2>
+  <p>
+  Let’s consider the inverse of the above problem. Instead of maintaining a 4-D tensor between two layers, lets assume we have four matrices corresponding to each dimension. The tensor product of these four matrices, results in a 4-D Tensor, which is the weights used by th neural network. Now, we backpropagate by computing the gradient with respect to the entries in the matrix(not the tensor) and update the entries. This way we can train neural networks in a compressed format, instead of training and then compressing. One drawback of this method is that, we need to recompute the tensor and store them in the memory or every weights update. One solution is to use a large batch size, thereby minimizing the time takes for recomputation of weights. This idea is relatively new and is coined as TensorNets. They claim that this way then compress a neural network by 200000 times, without a compromise on the accuracy.</p>
+
+ -->
+
+</dt-article>
+
+<dt-appendix>
+</dt-appendix>
+
+
+<script>
+
+
+function range(start, end) {
+    return Array(end - start + 1).fill().map((_, idx) => start + idx)
+}
+
+// set the dimensions and margins of the graph
+var margin = {top: 30, right: 30, bottom: 30, left: 30},
+  width = 450 - margin.left - margin.right,
+  height = 450 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+.append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+.append("g")
+  .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+// Labels of row and columns
+var myGroups = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+var myVars = ["v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10"]
+
+// Build X scales and axis:
+var x = d3.scaleBand()
+  .range([ 0, width ])
+  .domain(myGroups)
+  .padding(0.01);
+svg.append("g")
+  .attr("transform", "translate(0," + height + ")")
+  .call(d3.axisBottom(x))
+
+// Build X scales and axis:
+var y = d3.scaleBand()
+  .range([ height, 0 ])
+  .domain(myVars)
+  .padding(0.01);
+svg.append("g")
+  .call(d3.axisLeft(y));
+
+// Build color scale
+var myColor = d3.scaleLinear()
+  .range(["white", "#69b3a2"])
+  .domain([1,100])
+
+//Read the data
+d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/heatmap_data.csv", function(data) {
+
+  svg.selectAll()
+      .data(data, function(d) {return d.group+':'+d.variable;})
+      .enter()
+      .append("rect")
+      .attr("x", function(d) { return x(d.group) })
+      .attr("y", function(d) { return y(d.variable) })
+      .attr("width", x.bandwidth() )
+      .attr("height", y.bandwidth() )
+      .style("fill", function(d) { return myColor(d.value)} )
+
+})
+
+</script>
+
+
