@@ -285,7 +285,17 @@ h6 {
 
  -->
 
+<div class='l-screen'>
   <div id="fsm" style="width: 100%;height: 12em;"></div>
+
+</div>
+<div class='l-screen'>
+
+    <div id="markov-chain-1" style="width: 100%;height: 4em;clear: both;margin-top: 1em;">
+      
+    </div>
+
+</div>
 
       <div class="table-responsive col-md-6">
       <table class="table text-center" style="">
@@ -335,10 +345,6 @@ h6 {
       </div>
 
 
-  
-
-
-    <div id="markov-chain-1" style="width: 100%;height: 4em;clear: both;margin-top: 1em;"></div>
 
     
       <button type="button" class="btn" style="margin:0 auto;display:block;margin-top:1em;font-size: 1.5em;background: #4d6bff;color: white" onclick="render_markov_chain_1()">Resample using above</button>
@@ -375,9 +381,10 @@ h6 {
   
 </p>
 
+<div class='l-screen' >
 
-    <div id="hmm" style="width: 100%;height: 20em;"></div>
-
+    <div id="hmm" style="width: 100%;height: 15em;"></div>
+</div>
 
 
   <div class='l-screen' style="padding-left: 1em;padding-right: 1em">
@@ -455,9 +462,19 @@ h6 {
 
 
 </div>
+<!-- <div style="margin:0 auto">
+  
+        <button type="button" class="btn" style=";margin-top:1em;font-size: 1.5em;background: #4d6bff;color: white" onclick="render_hmm_chain_1()">Element Wise-Sampling</button>
+              <button type="button" class="btn" style="margin-top:1em;font-size: 1.5em;background: #4d6bff;color: white" onclick="render_hmm_chain_1()">b</button>
 
+</div>
+ -->
+<!--       <button type="button" class="btn" style="margin:0 auto;display:block;margin-top:1em;font-size: 1.5em;background: #4d6bff;color: white" onclick="render_hmm_chain_1('slow-sample')">Slow Sampling</button>
+ -->
 
-
+      <button type="button" class="btn" style="margin:0 auto;display:block;margin-top:1em;font-size: 1.5em;background: #4d6bff;color: white" onclick="render_hmm_chain_1('resample')">Resample</button>
+    
+    
 
 
 </dt-article>
@@ -928,7 +945,7 @@ function render_markov_chain_1(){
 
   var prev_index;
 
-  var x = -6;
+  var x = -3;
 
   var node_id = 0;
 
@@ -999,6 +1016,11 @@ markov_chain_1 = new sigma({
   }
 });
 
+markov_chain_1.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 1 });
+
+
+
+
 render_markov_chain_1();
 
 
@@ -1016,17 +1038,20 @@ hmm = new sigma({
         minArrowSize: 10,
         maxNodeSize: 32,
         maxEdgeSize: 4,
-        
+        mouseEnabled:false,
   }
 });
 
 
 
 var pos=-1;
-var x=-3;
+var x=-1.5;
 var hidden=true;
 
-function render_hmm_chain_1(){
+
+var nodes_to_display = -1;
+
+function render_hmm_chain_1(mode='slow-sample'){
 
     hmm.graph.clear()
 
@@ -1052,9 +1077,9 @@ function render_hmm_chain_1(){
 
   var coin_types = ['fair','biased']
   
-  var node = return_coin_node(-1,x,-0.5,"empty")
+  var node = return_coin_node(-1,x,-0.25,"empty")
   hmm.graph.addNode(node)
-  x+=1
+  x+=0.5
 
   var chosen_hidden_node;
   var previous_hidden_node;
@@ -1076,7 +1101,7 @@ function render_hmm_chain_1(){
     }
 
 
-    var node = return_coin_node(node_id,x,-0.5,coin_types[chosen_hidden_node])
+    var node = return_coin_node(node_id,x,-0.25,coin_types[chosen_hidden_node])
     hmm.graph.addNode(node)
 
 
@@ -1106,16 +1131,18 @@ function render_hmm_chain_1(){
     }
 
     var c = ['head','tail']
-    var node = return_coin_node(node_id, x, 0.5, c[observation])
+    var node = return_coin_node(node_id, x, 0.25, c[observation])
     hmm.graph.addNode(node)
 
 
     var edge = create_edge(node_id, node_id-1, node_id);
     edge.color = colors[6+2*chosen_hidden_node+observation]
     hmm.graph.addEdge(edge)
-    x+=1;
+    x+=0.5;
     node_id+=1
     }
+
+  
 
   hmm.refresh()
 
@@ -1124,6 +1151,9 @@ function render_hmm_chain_1(){
 
 
 render_hmm_chain_1()
+
+hmm.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 1 });
+
 
 // var x = -3;
 
