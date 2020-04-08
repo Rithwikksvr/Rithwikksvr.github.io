@@ -93,6 +93,17 @@ function return_coin_node(node_id, x, y, coin_type){
     node.color= 'rgb(255,125,150)'
     node.label = "Biased"
   }
+
+  else if (coin_type=="head"){
+   node.color= 'maroon'
+   node.label = "Head" 
+  }
+
+  else if (coin_type=="tail"){
+   node.color= 'purple'
+   node.label = "Tail" 
+  }
+  
   else{
     node.color= 'rgb(148,103,189)'
     node.label = "Start state" 

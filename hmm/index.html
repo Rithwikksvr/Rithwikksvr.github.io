@@ -83,6 +83,7 @@
 
 
   body {
+    overflow-x: hidden;
 
     font-family: Roboto!important;
 
@@ -286,84 +287,179 @@ h6 {
 
   <div id="fsm" style="width: 100%;height: 12em;"></div>
 
-
-  <table class="table text-center">
-    <thead>
-      <tr>
-        <th>Transition Matrix</th>
-        <th>Fair</th>
-        <th>Biased</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Fair</td>
-        <td><p id="custom-range-1-probability">0.5</p> <input type="range" id="custom-range-1" min="0" max="100" class="custom-range"></td>
-        <td><p id="custom-range-2-probability">0.5</p> <input type="range" id="custom-range-2" min="0" max="100" class="custom-range"></td>
-      </tr>
-      <tr>
-        <td>Biased</td>
-        <td><p id="custom-range-3-probability">0.5</p> <input type="range" id="custom-range-3" min="0" max="100" class="custom-range"></td>
-        <td><p id="custom-range-4-probability">0.5</p> <input type="range" id="custom-range-4" min="0" max="100" class="custom-range"></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- <table class="table text-center">
-    <thead>
-      <tr>
-        <th></th>
-        <th>Fair</th>
-        <th>Biased</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Fair</td>
-        <td></td>
-        <td><input type="range" id="custom-range-2" min="0" max="100" class="custom-range"></td>
-      </tr>
-      <tr>
-        <td>Biased</td>
-        <td><input type="range" id="custom-range-3" min="0" max="100" class="custom-range"></td>
-        <td><input type="range" id="custom-range-4" min="0" max="100" class="custom-range"></td>
-      </tr>
-      
-    </tbody>
-  </table> -->
-
-
-  <table class="table text-center">
-    <thead>
-      <tr>
-        <th>Pi</th>
-        <th>Coin</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Fair</td>
-        <td><p id="custom-range-5-probability">0.5</p> <input type="range" id="custom-range-5" min="0" max="100" class="custom-range"></td>
-       
-      </tr>
-      <tr>
-        <td>Biased</td>
-        <td><p id="custom-range-6-probability">0.5</p> <input type="range" id="custom-range-6" min="0" max="100" class="custom-range"></td>
-       
-      </tr>
-      
-    </tbody>
-  </table>
+      <div class="table-responsive col-md-6">
+      <table class="table text-center" style="">
+          <thead>
+            <tr>
+              <th>Transition Matrix</th>
+              <th>Fair</th>
+              <th>Biased</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Fair</td>
+              <td><p id="custom-range-1-probability">0.5</p> <input type="range" id="custom-range-1" min="0" max="100" class="custom-range"></td>
+              <td><p id="custom-range-2-probability">0.5</p> <input type="range" id="custom-range-2" min="0" max="100" class="custom-range"></td>
+            </tr>
+            <tr>
+              <td>Biased</td>
+              <td><p id="custom-range-3-probability">0.5</p> <input type="range" id="custom-range-3" min="0" max="100" class="custom-range"></td>
+              <td><p id="custom-range-4-probability">0.5</p> <input type="range" id="custom-range-4" min="0" max="100" class="custom-range"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-responsive col-md-6">
+      <table class="table text-center" style="">          
+        <thead>
+                  <tr>
+                    <th>Pi</th>
+                    <th>Coin</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Fair</td>
+                    <td><p id="custom-range-5-probability">0.5</p> <input type="range" id="custom-range-5" min="0" max="100" class="custom-range"></td>
+                   
+                  </tr>
+                  <tr>
+                    <td>Biased</td>
+                    <td><p id="custom-range-6-probability">0.5</p> <input type="range" id="custom-range-6" min="0" max="100" class="custom-range"></td>
+                   
+                  </tr>
+                  
+                </tbody>
+              </table>
+      </div>
 
 
-    <div id="markov-chain-1" style="width: 100%;height: 4em;"></div>
+  
+
+
+    <div id="markov-chain-1" style="width: 100%;height: 4em;clear: both;margin-top: 1em;"></div>
 
     
       <button type="button" class="btn" style="margin:0 auto;display:block;margin-top:1em;font-size: 1.5em;background: #4d6bff;color: white" onclick="render_markov_chain_1()">Resample using above</button>
     
     
 
+<h1>What is hidden in a hidden markov model?</h1>
+
+    <p>
+      We will understand this hidden component by taking an example of two coins. One of the coin is fair with the same probability of head and tail i.e. 0.5. The other coin is biased towards head by a probability of 0.7. The sequence of observation which we observe is \(\{H,T \ldots\}\) but what we do not know is which coin was responsible for the observation at a timestamp \(t\). We will use the notation \(x_i\) to represent the observations (which in this case is Head or Tail), \(Z_i\) to represent the states (which in this case is Fair or Biased coin).
+      <br><br>
+      See the diagram below. It is worth noting that there is a link between the states but not between the observations.
+    </p>
+
+    <img src="https://avikdas.com/assets/images/2019-06-24-dynamic-programming-for-machine-learning-hidden-markov-models/hmm-bare.png" style="display: block;
+  margin-left: auto;
+  margin-right: auto;">
+
+
+    <h1>Hidden Markov Model Parameters</h1>
+
+    <p>In this section we summarize the parameters we have observed so far.
+
+    <ol>
+
+      <li><b>Transition Matrix A</b>: The conditional probability \(A_{jk}\) of moving to state \(k\) from state \(j\) is given by: \(A_{jk} = P(z_n=k \vert z_{n-1}=j)\)
+      </li>
+      <li>
+    <b>Prior Probability \(\pi\)</b>: The probability of starting from one of the \(k\) available state on the first timestamp i.e. \(t=1\) given by \(\pi_k = P(z_1=k)\)</li>
+      <li>
+    <b>Emission Probability</b>: The conditional probability of observing a discrete or continuous value \(x\) from a state \(z\) given the transition matrix and the prior probability is given as \(phi_n = P(x_n \vert z_n, A, \pi)\)
+</li>
+    </ol>
   
+</p>
+
+
+    <div id="hmm" style="width: 100%;height: 20em;"></div>
+
+
+
+  <div class='l-screen' style="padding-left: 1em;padding-right: 1em">
+         <div class="table-responsive col-md-4">
+      <table class="table text-center" style="">          
+        <thead>
+                  <tr>
+                    <th>Pi</th>
+                    <th>Coin</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Fair</td>
+                    <td><p id="custom-range-7-probability">0.5</p> <input type="range" id="custom-range-7" min="0" max="100" class="custom-range"></td>
+                   
+                  </tr>
+                  <tr>
+                    <td>Biased</td>
+                    <td><p id="custom-range-8-probability">0.5</p> <input type="range" id="custom-range-8" min="0" max="100" class="custom-range"></td>                 
+                  </tr>
+                </tbody>
+              </table>
+      </div>
+
+
+    <div class="table-responsive col-md-4">
+      <table class="table text-center" style="">
+          <thead>
+            <tr>
+              <th>A</th>
+              <th>Fair</th>
+              <th>Biased</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Fair</td>
+              <td><p id="custom-range-9-probability">0.5</p> <input type="range" id="custom-range-9" min="0" max="100" class="custom-range"></td>
+              <td><p id="custom-range-10-probability">0.5</p> <input type="range" id="custom-range-10" min="0" max="100" class="custom-range"></td>
+            </tr>
+            <tr>
+              <td>Biased</td>
+              <td><p id="custom-range-11-probability">0.5</p> <input type="range" id="custom-range-11" min="0" max="100" class="custom-range"></td>
+              <td><p id="custom-range-12-probability">0.5</p> <input type="range" id="custom-range-12" min="0" max="100" class="custom-range"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+ 
+
+    <div class="table-responsive col-md-4">
+      <table class="table text-center" style="">
+          <thead>
+            <tr>
+              <th>Phi</th>
+              <th>Head</th>
+              <th>Tails</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Fair</td>
+              <td><p id="custom-range-13-probability">0.5</p> <input type="range" id="custom-range-13" min="0" max="100" class="custom-range"></td>
+              <td><p id="custom-range-14-probability">0.5</p> <input type="range" id="custom-range-14" min="0" max="100" class="custom-range"></td>
+            </tr>
+            <tr>
+              <td>Biased</td>
+              <td><p id="custom-range-15-probability">0.5</p> <input type="range" id="custom-range-15" min="0" max="100" class="custom-range"></td>
+              <td><p id="custom-range-16-probability">0.5</p> <input type="range" id="custom-range-16" min="0" max="100" class="custom-range"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+</div>
+
+
+
+
+
 </dt-article>
 
 <dt-appendix>
@@ -384,14 +480,17 @@ h6 {
 
 var main_dict = {}
 
-
 var colors = ['rgb(31,119,180)',
-              'rgb(140,86,75)',
               'rgb(255,127,14)',
-              'rgb(199,199,199)',
               'rgb(44,160,44)',
-              'rgb(23,190,207)']
-
+              'rgb(214,39,40)',
+              'rgb(148,103,189)',
+              'rgb(140,86,75)',
+              'rgb(227,119,194)',
+              'rgb(127,127,127)',
+              'rgb(188,189,34)',
+              'rgb(158,218,229)',
+              ]
 
 var g = {
       nodes: [],
@@ -585,43 +684,56 @@ fsm.refresh()
 
 
 
-function change_value(slider_id){
+function change_value(slider_id,mode='hmm'){
 
-
+  console.log(slider_id)
 
   var other_slider_id;
 
-  if (slider_id=="custom-range-1"){
-    other_slider_id="custom-range-2"
-  }
+  var splits = slider_id.split("-");
 
-  if (slider_id=="custom-range-2"){
-    other_slider_id="custom-range-1"
+  var num = parseInt(splits[splits.length - 1])
+
+  other_slider_id = "custom-range-"
+  if (num%2==0){
+    other_slider_id+=(num-1);
   }
+  else{
+    other_slider_id+=(num+1)
+  }
+  // if (slider_id=="custom-range-1"){
+  //   other_slider_id="custom-range-2"
+  // }
+
+  // if (slider_id=="custom-range-2"){
+  //   other_slider_id="custom-range-1"
+  // }
   
 
-  if (slider_id=="custom-range-3"){
-    other_slider_id="custom-range-4"
-  }
+  // if (slider_id=="custom-range-3"){
+  //   other_slider_id="custom-range-4"
+  // }
   
 
-  if (slider_id=="custom-range-4"){
-    other_slider_id="custom-range-3"
-  }
+  // if (slider_id=="custom-range-4"){
+  //   other_slider_id="custom-range-3"
+  // }
 
-  if (slider_id=="custom-range-5"){
-    other_slider_id="custom-range-6"
-  }
+  // if (slider_id=="custom-range-5"){
+  //   other_slider_id="custom-range-6"
+  // }
 
 
-  if (slider_id=="custom-range-6"){
-    other_slider_id="custom-range-5"
-  }
+  // if (slider_id=="custom-range-6"){
+  //   other_slider_id="custom-range-5"
+  // }
 
 
     
   var main_slider = document.getElementById(slider_id)
   var other_slider = document.getElementById(other_slider_id)
+
+
 
   other_slider.value = 100 - parseInt(main_slider.value)
 
@@ -634,9 +746,23 @@ function change_value(slider_id){
 
   // console.log(main_slider, other_slider_id, parseInt(main_slider.value))
 
-  render_markov_chain_1()
+  if (mode=='mm'){
+
+    render_markov_chain_1()
+
+  }
+
+  else{
+    render_hmm_chain_1()
+  }
+  
 
 }
+
+
+
+
+
 
 
 var slider_1 = document.getElementById('custom-range-1')
@@ -651,45 +777,115 @@ var slider_5 = document.getElementById('custom-range-5')
 
 var slider_6 = document.getElementById('custom-range-6')
 
+var slider_7 = document.getElementById('custom-range-7')
+
+var slider_8 = document.getElementById('custom-range-8')
+
+var slider_9 = document.getElementById('custom-range-9')
+
+var slider_10 = document.getElementById('custom-range-10')
+
+var slider_11 = document.getElementById('custom-range-11')
+
+var slider_12 = document.getElementById('custom-range-12')
+
+var slider_13 = document.getElementById('custom-range-13')
+
+var slider_14 = document.getElementById('custom-range-14')
+
+var slider_15 = document.getElementById('custom-range-15')
+
+var slider_16 = document.getElementById('custom-range-16')
+
 
 
 slider_1.oninput = function() {
-  change_value('custom-range-1')
+  change_value('custom-range-1','mm')
 }
 
 
 slider_2.oninput = function() {
-  change_value('custom-range-2')
+  change_value('custom-range-2','mm')
 }
 
 
 slider_3.oninput = function() {
-  change_value('custom-range-3')
+  change_value('custom-range-3','mm')
 }
 
 slider_4.oninput = function() {
-  change_value('custom-range-4')
+  change_value('custom-range-4','mm')
 }
 
 
 slider_5.oninput = function() {
-  change_value('custom-range-5')
+  change_value('custom-range-5','mm')
 }
 
 
 slider_6.oninput = function() {
-  change_value('custom-range-6')
+  change_value('custom-range-6','mm')
+}
+
+slider_7.oninput = function() {
+  change_value('custom-range-7')
+}
+
+slider_8.oninput = function() {
+  change_value('custom-range-8')
+}
+
+slider_9.oninput = function() {
+  change_value('custom-range-9')
+}
+
+slider_10.oninput = function() {
+  change_value('custom-range-10')
+}
+
+slider_11.oninput = function() {
+  change_value('custom-range-11')
+}
+
+slider_12.oninput = function() {
+  change_value('custom-range-12')
+}
+
+slider_13.oninput = function() {
+  change_value('custom-range-13')
+}
+
+slider_14.oninput = function() {
+  change_value('custom-range-14')
 }
 
 
-for(var q=1;q<colors.length+1;q++){
+slider_15.oninput = function() {
+  change_value('custom-range-15')
+}
+
+
+slider_16.oninput = function() {
+  change_value('custom-range-16')
+}
+
+
+for(var q=1;q<7;q++){
 
   var elem  = document.getElementById('custom-range-'+q)
 
-  // console.log(elem.parentElement)
+  elem.parentElement.style.background = colors[q-1];
+}
+
+
+for(var q=1;q<11;q++){
+
+  var elem  = document.getElementById('custom-range-'+(q+6))
 
   elem.parentElement.style.background = colors[q-1];
 }
+
+
 
 
 function render_markov_chain_1(){
@@ -752,14 +948,13 @@ function render_markov_chain_1(){
     }
     else{
       prev_index = chosen_index;
-      if (chosen_index==0){
+      if (prev_index==0){
         chosen_index = sample_with_probablities(coins, [a_a,a_b])
       }
 
       else{
         chosen_index = sample_with_probablities(coins, [b_a,b_b])
       }
-
     }
     console.log(chosen_index)
     var node = return_coin_node(node_id,x,2,coin_types[chosen_index])
@@ -805,6 +1000,141 @@ markov_chain_1 = new sigma({
 });
 
 render_markov_chain_1();
+
+
+
+
+
+hmm = new sigma({
+  graph: g,
+  container: 'hmm',
+  renderer: {
+    container: document.getElementById('hmm'),
+    type: sigma.renderers.canvas
+  },
+  settings : {
+        minArrowSize: 10,
+        maxNodeSize: 32,
+        maxEdgeSize: 4,
+        
+  }
+});
+
+
+
+var pos=-1;
+var x=-3;
+var hidden=true;
+
+function render_hmm_chain_1(){
+
+    hmm.graph.clear()
+
+
+
+  var pi_a = parseFloat(document.getElementById('custom-range-7-probability').innerHTML)
+  var pi_b = parseFloat(document.getElementById('custom-range-8-probability').innerHTML)
+
+  var a_a  = parseFloat(document.getElementById('custom-range-9-probability').innerHTML)
+  var a_b  = parseFloat(document.getElementById('custom-range-10-probability').innerHTML)
+
+  var b_a  = parseFloat(document.getElementById('custom-range-11-probability').innerHTML)
+  var b_b  = parseFloat(document.getElementById('custom-range-12-probability').innerHTML)
+
+  var f_h  = parseFloat(document.getElementById('custom-range-13-probability').innerHTML)
+  var f_t  = parseFloat(document.getElementById('custom-range-14-probability').innerHTML)
+
+  var b_h  = parseFloat(document.getElementById('custom-range-15-probability').innerHTML)
+  var b_t  = parseFloat(document.getElementById('custom-range-16-probability').innerHTML)
+
+
+  var coins = [0,1]
+
+  var coin_types = ['fair','biased']
+  
+  var node = return_coin_node(-1,x,-0.5,"empty")
+  hmm.graph.addNode(node)
+  x+=1
+
+  var chosen_hidden_node;
+  var previous_hidden_node;
+
+  var node_id=0;
+
+  for(var i=0;i<6;i++){
+    if (i==0){
+      chosen_hidden_node = sample_with_probablities(coins, [pi_a,pi_b])
+    }
+    else{
+      previous_hidden_node = chosen_hidden_node;
+      if (previous_hidden_node==0){
+        chosen_hidden_node = sample_with_probablities(coins, [a_a,a_b])
+      }
+      else{
+        chosen_hidden_node = sample_with_probablities(coins, [b_a,b_b])
+      }
+    }
+
+
+    var node = return_coin_node(node_id,x,-0.5,coin_types[chosen_hidden_node])
+    hmm.graph.addNode(node)
+
+
+
+    if (i==0){
+
+      var edge = create_edge(-1, -1, node_id, )
+      edge.color = colors[chosen_hidden_node]
+    }
+
+
+    if (i>0){
+      var edge = create_edge(node_id, node_id-2, node_id);
+      edge.color = colors[2+2*previous_hidden_node+chosen_hidden_node]
+      
+    }
+    hmm.graph.addEdge(edge) 
+    node_id+=1;
+
+    /// Observation
+
+    if (chosen_hidden_node==0){
+      var observation = sample_with_probablities(coins, [f_h,f_t])
+    }
+    else{
+      var observation = sample_with_probablities(coins, [b_h,b_t])
+    }
+
+    var c = ['head','tail']
+    var node = return_coin_node(node_id, x, 0.5, c[observation])
+    hmm.graph.addNode(node)
+
+
+    var edge = create_edge(node_id, node_id-1, node_id);
+    edge.color = colors[6+2*chosen_hidden_node+observation]
+    hmm.graph.addEdge(edge)
+    x+=1;
+    node_id+=1
+    }
+
+  hmm.refresh()
+
+
+}
+
+
+render_hmm_chain_1()
+
+// var x = -3;
+
+// var node = create_node(-1, x, -0.5)
+// node.color= 'rgb(148,103,189)'
+// node.label = "x_0"
+// graph_2.graph.addNode(node)
+// x+=1
+
+
+
 
 </script>
 
